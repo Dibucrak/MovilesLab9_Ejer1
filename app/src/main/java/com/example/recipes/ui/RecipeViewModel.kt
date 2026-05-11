@@ -18,17 +18,30 @@ class RecipeViewModel(private val repository: RecipeRepository) : ViewModel() {
     private val _state = mutableStateOf<RecipeState>(RecipeState.Loading)
     val state: State<RecipeState> = _state
 
-    init { getRecipes() }
+    init { loadAll() }
 
-    fun getRecipes() {
+    fun loadAll() {
         viewModelScope.launch {
             _state.value = RecipeState.Loading
-            try {
-                val recipes = repository.getAllRecipes()
-                _state.value = RecipeState.Success(recipes)
-            } catch (e: Exception) {
-                _state.value = RecipeState.Error("Error: ${e.message}")
-            }
+            val data = repository.getCombinedRecipes()
+            _state.value = RecipeState.Success(data)
+        }
+    }
+
+    fun addRecipe(name: String, ingredients: String) {
+        viewModelScope.launch {
+            val newRecipe = Recipe(
+                name = name,
+                ingredients = ingredients.split(","),
+                instructions = listOf("Instrucciones manuales"),
+                prepTimeMinutes = 30,
+                difficulty = "Media",
+                cuisine = "Local",
+                image = "https://images.unsplash.com/photo-1546069901-ba9599a7e63c",
+                isManual = true
+            )
+            repository.saveRecipe(newRecipe)
+            loadAll()
         }
     }
 }

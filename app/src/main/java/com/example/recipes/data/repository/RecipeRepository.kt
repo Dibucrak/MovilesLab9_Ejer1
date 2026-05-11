@@ -1,15 +1,24 @@
 package com.example.recipes.data.repository
 
-import com.example.recipes.data.remote.RecipeApi
+import com.example.recipes.data.local.RecipeDao
 import com.example.recipes.data.model.Recipe
+import com.example.recipes.data.remote.RecipeApi
 
-class RecipeRepository(private val api: RecipeApi) {
-    suspend fun getAllRecipes(): List<Recipe> {
+class RecipeRepository(
+    private val api: RecipeApi,
+    private val dao: RecipeDao
+) {
+    suspend fun getCombinedRecipes(): List<Recipe> {
         return try {
-            val response = api.getRecipes()
-            response.recipes
+            val apiData = api.getRecipes().recipes
+            val localData = dao.getAllLocalRecipes()
+            localData + apiData
         } catch (e: Exception) {
-            emptyList()
+            dao.getAllLocalRecipes()
         }
+    }
+
+    suspend fun saveRecipe(recipe: Recipe) {
+        dao.insertRecipe(recipe)
     }
 }
