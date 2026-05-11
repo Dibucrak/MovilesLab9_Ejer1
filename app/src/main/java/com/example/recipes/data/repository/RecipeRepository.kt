@@ -1,10 +1,7 @@
 package com.example.recipes.data.repository
 
-class RecipeRepository {
-}package com.example.recipes.data.repository
-
 import com.example.recipes.data.remote.RecipeApi
-import com.example.recipes.Recipe
+import com.example.recipes.data.model.Recipe
 
 class RecipeRepository(private val api: RecipeApi) {
     suspend fun getAllRecipes(): List<Recipe> {

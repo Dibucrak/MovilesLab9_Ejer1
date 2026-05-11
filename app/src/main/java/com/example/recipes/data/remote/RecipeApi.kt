@@ -1,9 +1,6 @@
 package com.example.recipes.data.remote
 
-class RecipeApi {
-}package com.example.recipes.data.remote
-
-import com.example.recipes.RecipeResponse
+import com.example.recipes.data.model.RecipeResponse
 import retrofit2.http.GET
 
 interface RecipeApi {
